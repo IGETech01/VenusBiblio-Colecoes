@@ -80,6 +80,50 @@ class ValidacaoPublicaTest(unittest.TestCase):
         self.catalogo()
         self.run_validation(True)
 
+    def test_autoria_colecao_publicada_e_valida(self):
+        pasta = self.catalogo()
+        indice = self.root / "workshop" / "colecoes.json"
+        entry = json.loads(indice.read_text(encoding="utf-8"))
+        entry["colecoes"][0]["autor"] = "Organizador autorizado"
+        indice.write_text(json.dumps(entry, ensure_ascii=False), encoding="utf-8")
+        path = pasta / "catalogo.json"
+        catalogo = json.loads(path.read_text(encoding="utf-8"))
+        catalogo["autor_colecao"] = "Organizador autorizado"
+        path.write_text(json.dumps(catalogo, ensure_ascii=False), encoding="utf-8")
+        self.run_validation(True)
+
+    def test_autoria_diferente_entre_indice_e_catalogo_e_bloqueada(self):
+        pasta = self.catalogo()
+        indice = self.root / "workshop" / "colecoes.json"
+        entry = json.loads(indice.read_text(encoding="utf-8"))
+        entry["colecoes"][0]["autor"] = "Pessoa A"
+        indice.write_text(json.dumps(entry, ensure_ascii=False), encoding="utf-8")
+        path = pasta / "catalogo.json"
+        catalogo = json.loads(path.read_text(encoding="utf-8"))
+        catalogo["autor_colecao"] = "Pessoa B"
+        path.write_text(json.dumps(catalogo, ensure_ascii=False), encoding="utf-8")
+        self.run_validation(False)
+
+    def test_autoria_incompleta_e_bloqueada(self):
+        self.catalogo()
+        indice = self.root / "workshop" / "colecoes.json"
+        entry = json.loads(indice.read_text(encoding="utf-8"))
+        entry["colecoes"][0]["autor"] = "Organizador"
+        indice.write_text(json.dumps(entry, ensure_ascii=False), encoding="utf-8")
+        self.run_validation(False)
+
+    def test_autoria_vazia_e_bloqueada(self):
+        pasta = self.catalogo()
+        indice = self.root / "workshop" / "colecoes.json"
+        entry = json.loads(indice.read_text(encoding="utf-8"))
+        entry["colecoes"][0]["autor"] = "  "
+        indice.write_text(json.dumps(entry, ensure_ascii=False), encoding="utf-8")
+        path = pasta / "catalogo.json"
+        catalogo = json.loads(path.read_text(encoding="utf-8"))
+        catalogo["autor_colecao"] = "  "
+        path.write_text(json.dumps(catalogo, ensure_ascii=False), encoding="utf-8")
+        self.run_validation(False)
+
     def test_catalogo_inexistente_falha(self):
         pasta = self.catalogo()
         (pasta / "catalogo.json").unlink()

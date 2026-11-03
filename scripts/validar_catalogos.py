@@ -67,11 +67,18 @@ def validate_collection(slug: str, metadata: dict) -> int:
     require(folder.is_dir() and not folder.is_symlink(), f'Pasta inexistente: {slug}')
     doc = load_json(folder / 'catalogo.json')
     require(doc.get('formato') == FORMATO_CATALOGO, f'Formato do catálogo incorreto: {slug}')
-    require(set(doc) <= {'formato', 'nome', 'descricao', 'livros', 'distribuicao'}, f'Campos extras no catálogo público: {slug}')
+    require(set(doc) <= {'formato', 'nome', 'descricao', 'autor_colecao', 'livros', 'distribuicao'}, f'Campos extras no catálogo público: {slug}')
     require(text_ok(doc.get('nome'), 100), f'Nome do catálogo inválido: {slug}')
     require(text_ok(doc.get('descricao', ''), 600, False), f'Descrição inválida: {slug}')
     require(metadata['nome'].strip() == doc['nome'].strip(), f'Nome do índice não corresponde: {slug}')
     require(metadata['descricao'].strip() == doc.get('descricao', '').strip(), f'Descrição do índice não corresponde: {slug}')
+    # Autoria opcional a partir do Workshop 0.15.1. Catálogos legados sem
+    # os campos continuam válidos; novos catálogos devem manter ambos alinhados.
+    require(('autor' in metadata) == ('autor_colecao' in doc), f'Autoria incompleta no índice/catálogo: {slug}')
+    if 'autor' in metadata:
+        require(text_ok(metadata['autor'], 220), f'Autor inválido no índice: {slug}')
+        require(text_ok(doc['autor_colecao'], 220), f'Autor inválido no catálogo: {slug}')
+        require(metadata['autor'].strip() == doc['autor_colecao'].strip(), f'Autoria divergente entre índice e catálogo: {slug}')
 
     distrib = doc.get('distribuicao')
     require(isinstance(distrib, dict) and set(distrib) == {'tipo', 'repositorio', 'tag'}, f'Distribuição incorreta: {slug}')
@@ -117,7 +124,7 @@ def validate() -> int:
     count = 0
     for meta in items:
         require(isinstance(meta, dict), 'Entrada do índice inválida')
-        require(set(meta) == {'id','nome','descricao','quantidade'}, 'Campos extras na entrada do índice')
+        require({'id','nome','descricao','quantidade'} <= set(meta) <= {'id','nome','descricao','quantidade','autor'}, 'Campos extras na entrada do índice')
         slug = meta.get('id')
         require(isinstance(slug, str) and bool(SLUG.fullmatch(slug)) and slug.lower() not in seen, 'ID de coleção inválido/duplicado')
         seen.add(slug.lower())
