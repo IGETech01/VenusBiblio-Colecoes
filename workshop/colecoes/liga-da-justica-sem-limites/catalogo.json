@@ -1,0 +1,83 @@
+{
+  "formato": "biblioteca-offline-workshop-v1",
+  "nome": "Liga da Justiça Sem Limites",
+  "descricao": "ED-(2025) PTBR",
+  "livros": [
+    {
+      "id": "233e96c7119d8fad08a9",
+      "titulo": "liga-da-justica-sem-limites-01-2025",
+      "autor": "DC Comic BR",
+      "genero": "Outros",
+      "ano": null,
+      "licenca": "1.0",
+      "arquivo": "livros/liga-da-justica-sem-limites-01-2025-233e96c7119d.cbz",
+      "sha256": "233e96c7119d8fad08a98a8c1a74131bb91a7cefcc6200cc04969d63fc4c23e0",
+      "tamanho": 40569538,
+      "descricao": "",
+      "tipo_conteudo": "HQ",
+      "capa": "capas/233e96c7119d8fad08a98a8c.jpg"
+    },
+    {
+      "id": "9c48bdba1718d2b8a56c",
+      "titulo": "liga-da-justica-sem-limites-02-2025",
+      "autor": "DC Comic BR",
+      "genero": "Outros",
+      "ano": null,
+      "licenca": "1.0",
+      "arquivo": "livros/liga-da-justica-sem-limites-02-2025-9c48bdba1718.cbz",
+      "sha256": "9c48bdba1718d2b8a56c355abad3a1bcd8b21ebd291896f703e7aaaddeaf56cb",
+      "tamanho": 38888897,
+      "descricao": "",
+      "tipo_conteudo": "HQ",
+      "capa": "capas/9c48bdba1718d2b8a56c355a.jpg"
+    },
+    {
+      "id": "a0b35d32d963ea07b4eb",
+      "titulo": "liga-da-justica-sem-limites-03-2025",
+      "autor": "DC Comic BR",
+      "genero": "Outros",
+      "ano": null,
+      "licenca": "1.0",
+      "arquivo": "livros/liga-da-justica-sem-limites-03-2025-a0b35d32d963.cbz",
+      "sha256": "a0b35d32d963ea07b4ebc77cbfdec90c270d2199762042409062944ed82e962e",
+      "tamanho": 36949925,
+      "descricao": "",
+      "tipo_conteudo": "HQ",
+      "capa": "capas/a0b35d32d963ea07b4ebc77c.jpg"
+    },
+    {
+      "id": "c4c4cced6c474c22b796",
+      "titulo": "liga-da-justica-sem-limites-04-2025",
+      "autor": "DC Comic BR",
+      "genero": "Outros",
+      "ano": null,
+      "licenca": "1.0",
+      "arquivo": "livros/liga-da-justica-sem-limites-04-2025-c4c4cced6c47.cbz",
+      "sha256": "c4c4cced6c474c22b796aee3ef1ddff80b11a2400c26c8a2529ba9dfa5ff77b5",
+      "tamanho": 39625281,
+      "descricao": "",
+      "tipo_conteudo": "HQ",
+      "capa": "capas/c4c4cced6c474c22b796aee3.jpg"
+    },
+    {
+      "id": "d8bf915f77e32139b50e",
+      "titulo": "liga-da-justica-sem-limites-05-2025",
+      "autor": "DC Comic BR",
+      "genero": "Outros",
+      "ano": null,
+      "licenca": "1.0",
+      "arquivo": "livros/liga-da-justica-sem-limites-05-2025-d8bf915f77e3.cbz",
+      "sha256": "d8bf915f77e32139b50e694e2163a997571f4cb261c6cae91f97194a77fb9989",
+      "tamanho": 38316408,
+      "descricao": "",
+      "tipo_conteudo": "HQ",
+      "capa": "capas/d8bf915f77e32139b50e694e.jpg"
+    }
+  ],
+  "autor_colecao": "IGETech",
+  "distribuicao": {
+    "tipo": "github_release",
+    "repositorio": "IGETech01/VenusBiblio-Colecoes",
+    "tag": "colecao-liga-da-justica-sem-limites-v1"
+  }
+}
