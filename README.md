@@ -12,7 +12,7 @@ Esse é o endereço público destinado aos usuários. O repositório `VenusBibli
 
 O VenusBiblio consulta o [índice oficial de coleções](workshop/colecoes.json), abre os catálogos públicos e permite baixar livros autorizados com verificação de tamanho e SHA-256. Após o download, a leitura é offline.
 
-**Estado atual: nenhuma coleção publicada.** O índice inicial está vazio por segurança. Nenhum servidor privado da IGE é necessário para consultar este catálogo.
+**Coleções disponíveis:** consulte o [índice público atualizado](workshop/colecoes.json). O catálogo pode ser consultado sem qualquer servidor privado da IGE. Somente obras com autorização de redistribuição devem permanecer publicadas.
 
 ## Estrutura do serviço
 
