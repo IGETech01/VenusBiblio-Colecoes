@@ -1,0 +1,30 @@
+name: Validar catalogos publicos do Workshop
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'workshop/**'
+      - 'scripts/validar_catalogos.py'
+      - '.github/workflows/validar-catalogos.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    name: Conferir formato, integridade declarada e arquivos permitidos
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter repositorio
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Conferir estrutura publica
+        run: python scripts/validar_catalogos.py
