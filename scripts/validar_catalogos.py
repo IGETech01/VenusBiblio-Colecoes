@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,7 +28,9 @@ def require(ok: bool, msg: str) -> None:
 
 
 def text_ok(value: object, limit: int, required: bool = True) -> bool:
-    return isinstance(value, str) and (bool(value.strip()) or not required) and len(value) <= limit and not any(c in value for c in '\x00\r')
+    return (isinstance(value, str) and
+            (bool(value.strip()) or not required) and len(value) <= limit and
+            not any(unicodedata.category(ch) in ('Cc', 'Cf', 'Cs') for ch in value))
 
 
 def strict_object(pairs):
@@ -56,7 +59,7 @@ def cover_exists(folder: Path, name: object) -> bool:
     if len(parts) != 2 or not COVER.fullmatch(parts[1]):
         return False
     obj = folder / 'capas' / parts[1]
-    return obj.is_file() and not obj.is_symlink() and obj.stat().st_size <= MAX_COVER
+    return obj.is_file() and not obj.is_symlink() and 0 < obj.stat().st_size <= MAX_COVER
 
 
 def validate_collection(slug: str, metadata: dict) -> int:
@@ -83,8 +86,8 @@ def validate_collection(slug: str, metadata: dict) -> int:
         require(isinstance(item, dict), f'Livro inválido: {slug}')
         require(set(item) <= {'id','titulo','autor','genero','ano','licenca','arquivo','sha256','tamanho','descricao','tipo_conteudo','capa'}, f'Campos extras no livro da coleção: {slug}')
         id_ = item.get('id')
-        require(isinstance(id_, str) and bool(BOOK_ID.fullmatch(id_)) and id_ not in ids, f'ID de livro inválido/duplicado: {slug}')
-        ids.add(id_)
+        require(isinstance(id_, str) and bool(BOOK_ID.fullmatch(id_)) and id_.casefold() not in ids, f'ID de livro inválido/duplicado: {slug}')
+        ids.add(id_.casefold())
         for field, limit in [('titulo', 220), ('autor', 220), ('genero', 80), ('licenca', 150)]:
             require(text_ok(item.get(field), limit), f'Campo {field} inválido: {slug}/{id_}')
         require(text_ok(item.get('descricao', ''), 1000, False), f'Descrição de livro inválida: {slug}/{id_}')
@@ -133,10 +136,46 @@ def validate() -> int:
                     relative = entry.relative_to(item).as_posix()
                     if relative != 'catalogo.json' and not (relative.startswith('capas/') and len(relative.split('/')) == 2 and COVER.fullmatch(relative.split('/')[1])):
                         raise ValueError(f'Arquivo inesperado no Workshop: {relative}')
+    # Lista explícita de arquivos públicos: extensões permitidas, por si só,
+    # não impediriam backups .txt, segredos .json ou código administrativo.
+    allow = {
+        '.gitattributes', '.gitignore', 'README.md',
+        '.github/workflows/validar-catalogos.yml',
+        'docs/COMO_PUBLICAR.md', 'docs/EXEMPLO_CATALOGO.json',
+        'scripts/validar_catalogos.py', 'tests/test_validar_catalogos.py',
+        'workshop/colecoes.json',
+    }
+    secrets = (
+        re.compile(rb'-----BEGIN (?:OPENSSH |RSA |EC |DSA |ED25519 )?PRIVATE KEY-----', re.I),
+        re.compile(rb'(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{25,}|AKIA[0-9A-Z]{16})'),
+        re.compile(rb'[A-Za-z]:\\Users\\', re.I),
+    )
     for entry in ROOT.rglob('*'):
-        if any(part in ('.git', '__pycache__', '.venv') for part in entry.relative_to(ROOT).parts) or not entry.is_file():
+        relative = entry.relative_to(ROOT)
+        if any(part in ('.git', '__pycache__', '.venv', '.pytest_cache') for part in relative.parts):
             continue
-        require(entry.suffix.lower() not in ('.pdf', '.epub', '.cbz', '.zip', '.exe', '.pem', '.key', '.db', '.sqlite'), f'Arquivo privado/binário não permitido no Git: {entry.relative_to(ROOT)}')
+        require(not entry.is_symlink(), f'Link simbólico não permitido: {relative}')
+        if entry.is_dir():
+            continue
+        require(entry.is_file(), f'Item especial não autorizado: {relative}')
+        name = relative.as_posix()
+        pieces = relative.parts
+        allowed_collection = (
+            len(pieces) == 4 and pieces[:2] == ('workshop', 'colecoes')
+            and pieces[2] in seen and pieces[3] == 'catalogo.json'
+        )
+        allowed_cover = (
+            len(pieces) == 5 and pieces[:2] == ('workshop', 'colecoes')
+            and pieces[2] in seen and pieces[3] == 'capas'
+            and COVER.fullmatch(pieces[4]) is not None
+        )
+        require(name in allow or allowed_collection or allowed_cover,
+                f'Arquivo não autorizado para publicação: {name}')
+        require(0 < entry.stat().st_size <= MAX_JSON,
+                f'Arquivo público vazio ou maior que 2 MiB: {name}')
+        content = entry.read_bytes()
+        require(not any(pattern.search(content) for pattern in secrets),
+                f'Possível segredo detectado no arquivo público: {name}')
     print(f'OK: {len(items)} coleções públicas, {count} obras catalogadas. Nenhum livro armazenado nos commits.')
     return 0
 
