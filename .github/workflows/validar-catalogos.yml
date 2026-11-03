@@ -3,20 +3,21 @@ name: Validar catalogos publicos do Workshop
 on:
   push:
     branches: [main]
-    paths:
-      - 'workshop/**'
-      - 'scripts/validar_catalogos.py'
-      - '.github/workflows/validar-catalogos.yml'
   pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: workshop-catalogos-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validar:
-    name: Conferir formato, integridade declarada e arquivos permitidos
+    name: Conferir catalogos, arquivos permitidos e testes
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Obter repositorio
         uses: actions/checkout@v4
@@ -28,3 +29,5 @@ jobs:
           python-version: '3.12'
       - name: Conferir estrutura publica
         run: python scripts/validar_catalogos.py
+      - name: Executar testes de regressao do catalogo
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
