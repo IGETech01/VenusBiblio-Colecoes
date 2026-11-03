@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -15,13 +17,14 @@ concurrency:
 
 jobs:
   validar:
-    name: Conferir catalogos, arquivos permitidos e testes
+    name: Conferir catalogos, arquivos permitidos e Releases
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Obter repositorio
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event_name == 'release' && 'main' || github.sha }}
           persist-credentials: false
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -29,5 +32,10 @@ jobs:
           python-version: '3.12'
       - name: Conferir estrutura publica
         run: python scripts/validar_catalogos.py
-      - name: Executar testes de regressao do catalogo
+      - name: Executar testes offline
         run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Conferir assets de colecoes publicadas
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/verificar_releases.py
