@@ -142,7 +142,8 @@ def validate() -> int:
         '.gitattributes', '.gitignore', 'README.md',
         '.github/workflows/validar-catalogos.yml',
         'docs/COMO_PUBLICAR.md', 'docs/EXEMPLO_CATALOGO.json',
-        'scripts/validar_catalogos.py', 'tests/test_validar_catalogos.py',
+        'scripts/validar_catalogos.py', 'scripts/verificar_releases.py',
+        'tests/test_validar_catalogos.py', 'tests/test_verificar_releases.py',
         'workshop/colecoes.json',
     }
     secrets = (
