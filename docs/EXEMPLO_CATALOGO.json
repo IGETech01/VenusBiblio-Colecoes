@@ -1,0 +1,11 @@
+{
+  "formato": "biblioteca-offline-workshop-v1",
+  "nome": "Nome da coleção",
+  "descricao": "Somente obras autorizadas",
+  "distribuicao": {
+    "tipo": "github_release",
+    "repositorio": "IGETech01/VenusBiblio-Colecoes",
+    "tag": "colecao-exemplo-v1"
+  },
+  "livros": []
+}
