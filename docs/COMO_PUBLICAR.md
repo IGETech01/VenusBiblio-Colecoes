@@ -1,52 +1,34 @@
-# Publicação de coleções para o Workshop VenusBiblio
+# Publicar coleções do Workshop VenusBiblio
 
-O Workshop lê o índice público `workshop/colecoes.json` na branch `main`.
-Os catálogos ficam em `workshop/colecoes/ID/catalogo.json` e as capas em
-`workshop/colecoes/ID/capas/`.
+Este repositório hospeda **coleções de livros**, não o instalador do programa. O download do VenusBiblio é feito na [página oficial IGETech](https://igetech01.github.io/VenusBiblio-Updates/).
 
-**Os PDFs, EPUBs e CBZs ficam nos anexos de um GitHub Release, não nos commits.**
+## Estrutura compatível com o VenusBiblio
 
-## Passos
+O aplicativo consulta o arquivo `workshop/colecoes.json` na branch `main`. Cada entrada com ID `classicos`, por exemplo, aponta para `workshop/colecoes/classicos/catalogo.json`. As capas ficam em `workshop/colecoes/classicos/capas/`.
 
-1. No **Workshop Admin** de uma conta desenvolvedora autorizada, exporte uma coleção
-   local e use **Preparar publicação no GitHub**. Confirme previamente que todas
-   as obras podem ser redistribuídas.
-2. A ferramenta gera `ASSETS_DO_RELEASE/`, `ARQUIVOS_DO_REPOSITORIO/`
-   e instruções. Revise todos os arquivos e as permissões de publicação.
-3. Crie no GitHub um Release de coleção com a tag indicada pela ferramenta,
-   por exemplo `colecao-classicos-v1`, anexando **todos os livros** de
-   `ASSETS_DO_RELEASE/`. Não marque como versão mais recente do aplicativo.
-4. Envie `workshop/colecoes/ID/catalogo.json` e as capas geradas para a branch
-   `main` **sem alterar os nomes**. Confira o SHA-256 e o tamanho de cada livro.
-5. Mescle a entrada nova de `colecoes.json` ao índice já publicado. **Não substitua
-   o índice inteiro**, senão outras coleções poderão desaparecer.
-6. Execute `python scripts/validar_catalogos.py` antes do commit. O workflow do
-   GitHub também verificará a estrutura quando houver alterações.
-7. No VenusBiblio, abra **Workshop → Coleções públicas**. Verifique a descoberta,
-   baixe uma obra autorizada e confirme que ela abre offline.
+**Os livros PDF, EPUB e CBZ devem ser anexados a GitHub Releases desta mesma conta e repositório; não devem ser adicionados aos commits.**
 
-## Regras de segurança
+## Processo de publicação
 
-- Somente PDFs, EPUBs e CBZs com licença adequada. O app exige SHA-256
-  de 64 caracteres e arquivos de até **250 MiB cada**.
-- Use nomes de assets simples, sem espaços nem caminhos relativos complexos.
-- Use tags `colecao-ID-vN` e mantenha o repositório de distribuição
-  `IGETech01/VenusBiblio-Colecoes`.
-- Use `catalogo.json` com `formato: biblioteca-offline-workshop-v1`,
-  `distribuicao.tipo: github_release`, `distribuicao.repositorio` e
-  `distribuicao.tag` compatíveis com o preparador da versão 0.14.9-dev.
-- Não publique arquivos privados, contas, certificados, dados pessoais,
-  backups, chaves, livros não autorizados ou informações do servidor local.
-- É conteúdo **público**: quem tiver o link poderá baixar os arquivos.
-  GitHub Releases não é um controle de acesso para conteúdo pago.
+1. No Workshop Admin, com conta de desenvolvedor autorizada, exporte a coleção e use **Preparar publicação no GitHub**. Confira os direitos de redistribuição de cada obra.
+2. A ferramenta prepara `ASSETS_DO_RELEASE/`, `ARQUIVOS_DO_REPOSITORIO/` e instruções. Revise o conteúdo para garantir que não haja dados pessoais, segredos ou material não autorizado.
+3. Crie um Release com a tag exata gerada, por exemplo `colecao-classicos-v1`, e anexe todos os livros preparados, mantendo os nomes. Se publicar outra edição da coleção, use uma nova tag.
+4. Somente depois de os arquivos do Release estarem disponíveis, publique `workshop/colecoes/ID/catalogo.json` e suas capas na branch `main`.
+5. **Mescle** a entrada da nova coleção em `workshop/colecoes.json`; nunca substitua o índice inteiro, pois isso apagaria outras coleções da lista.
+6. Execute `python scripts/validar_catalogos.py` antes do commit. O GitHub Actions também examinará a estrutura ao receber alterações.
+7. Teste no VenusBiblio: abra **Workshop → Coleções públicas**, descubra a coleção, baixe um livro autorizado e confirme a leitura offline.
 
-## Disponibilidade
+## Formatos e integridade
 
-A leitura de catálogo requer internet. Depois de importar os livros,
-a leitura da cópia local funciona offline. O GitHub pode aplicar limites
-de disponibilidade e transferência; não é um serviço com SLA contratado.
+- O índice usa o formato `igetech-workshop-colecoes-v1`.
+- Cada catálogo usa o formato `biblioteca-offline-workshop-v1` e o campo `distribuicao` com `tipo: github_release`, `repositorio: IGETech01/VenusBiblio-Colecoes` e `tag: colecao-ID-vN`.
+- Os arquivos de cada livro ficam declarados no catálogo como `livros/NOME.pdf`, `livros/NOME.epub` ou `livros/NOME.cbz`, com `sha256` e `tamanho` reais. Cada livro pode ter no máximo **250 MiB**.
+- As capas ficam em `capas/NOME.png` (ou JPG/WEBP) e têm limite de **2 MiB**.
+- Os nomes de arquivos e IDs precisam respeitar os formatos aceitos pelo preparador, sem caminhos absolutos, `..`, URL ou nomes de arquivos arbitrários.
+- Arquivos de Release são públicos; **não use GitHub Releases como mecanismo de autenticação, conteúdo privado ou assinatura paga**.
 
-## Exemplo (apenas documentação)
+## Cuidados operacionais
 
-[`docs/EXEMPLO_CATALOGO.json`](EXEMPLO_CATALOGO.json) ilustra a estrutura de um
-catálogo vazio. **Não o adicione ao índice** nem publique uma coleção vazia.
+O GitHub é usado como hospedagem estática; ele pode aplicar limites de disponibilidade ou transferência. A leitura dos livros já importados continua offline mesmo se o catálogo estiver temporariamente indisponível.
+
+**A primeira coleção ainda não foi publicada.** O arquivo [EXEMPLO_CATALOGO.json](EXEMPLO_CATALOGO.json) é apenas documentação e não deve ser colocado no índice enquanto estiver vazio.
