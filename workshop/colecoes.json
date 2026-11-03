@@ -1,4 +1,12 @@
 {
   "formato": "igetech-workshop-colecoes-v1",
-  "colecoes": []
+  "colecoes": [
+    {
+      "id": "liga-da-justica-sem-limites",
+      "nome": "Liga da Justiça Sem Limites",
+      "descricao": "ED-(2025) PTBR",
+      "quantidade": 5,
+      "autor": "IGETech"
+    }
+  ]
 }
