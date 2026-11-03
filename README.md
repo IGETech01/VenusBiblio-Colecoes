@@ -1,18 +1,18 @@
 # VenusBiblio · Coleções públicas IGETech
 
-Este repositório é a **infraestrutura de distribuição das coleções do Workshop**. Ele não é a página inicial nem o canal de instalação do VenusBiblio.
+Este espaço reúne as coleções disponíveis no **Workshop Cliente do VenusBiblio**. Para conhecer ou instalar o programa, use a página oficial.
 
 ## 📥 Onde baixar o programa?
 
-**Acesse a [página oficial de downloads do VenusBiblio](https://igetech01.github.io/VenusBiblio-Updates/).**
+**[Baixar VenusBiblio para Windows](https://igetech01.github.io/VenusBiblio-Updates/baixar/)** · [Conhecer o programa](https://igetech01.github.io/VenusBiblio-Updates/demo/)
 
-Esse é o endereço público destinado aos usuários. O repositório `VenusBiblio-Updates` fornece os instaladores por trás daquela página; este repositório, `VenusBiblio-Colecoes`, fornece **somente catálogos e livros**.
+As coleções podem ser consultadas dentro do VenusBiblio. Esta página é dedicada aos catálogos, não ao instalador.
 
 ## 📚 Workshop: coleções de qualquer lugar
 
-O VenusBiblio consulta o [índice oficial de coleções](workshop/colecoes.json), abre os catálogos públicos e permite baixar livros autorizados com verificação de tamanho e SHA-256. Após o download, a leitura é offline.
+Explore as coleções disponíveis pelo Workshop Cliente. Depois de baixar os arquivos, você pode ler offline.
 
-**Coleções disponíveis:** consulte o [índice público atualizado](workshop/colecoes.json). O catálogo pode ser consultado sem qualquer servidor privado da IGE. Somente obras com autorização de redistribuição devem permanecer publicadas.
+**Coleções disponíveis:** consulte o [catálogo atualizado](workshop/colecoes.json).
 
 ## Estrutura do serviço
 
